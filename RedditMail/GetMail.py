@@ -93,7 +93,6 @@ def run():
 
 def main():
     print("RedditMail ", str(VERSION))
-    print("Luke Zambella 2015")
     print("")
     STATUS = True
     run()
