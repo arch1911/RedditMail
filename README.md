@@ -1,6 +1,6 @@
 # RedditMail
 An even more obscure way to browse (text based) subreddits on Reddit. 
-# What it does
+## What it does
 The program should run on a server (or a personal computer) and have its own email address to monitor.
 The user should send an email from any of their (work email not recommended) email addresses to the address the program is monitoring.
 The program parses the email and uses PRAW to get the content the user specified
