@@ -25,8 +25,8 @@ def run():
     # Change these so that it gets it from a file instead
     userName = ""
     password = ""
-    IMAPServer = "imap.gmail.com" # Service I used
-    with open("Path_to_login_file") as x:    # Hide this file on the remote OS
+    IMAPServer = "imap.gmail.com" # Change this to match your email's imap server
+    with open("[LOG_FILE]") as x: # The login file you use to log in, should have 'USERNAME [username]' and 'PASSWORD [password' on separate lines and nothing else
         data = x.readlines()
     for x in data:
         d = x.split(":")
