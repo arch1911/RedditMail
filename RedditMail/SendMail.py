@@ -43,7 +43,7 @@ class redditMail():
     def sendMail(list, receiver): # def sendMail(content, receiver)
         userName = ""
         password = ""
-        with open("nice try") as x:    # login file
+        with open("[LOGIN FILE]") as x:    # login file, should have 'USERNAME [EMAIL NAME]' and 'PASSWORD [PASSWORD]' on separate lines
             data = x.readlines()
             for x in data:
                 d = x.split(":")
@@ -56,17 +56,16 @@ class redditMail():
         userName = "redditmail058@gmail.com"
         msg = MIMEText(list, 'html')
         msg['Subject'] = "Reddit"
-        msg['From'] = "redditmail058@gmail.com" # This does nothing
+        msg['From'] = "[MAIL NAME]"
         msg['To'] = receiver # Get the sent email
 
-        mail = smtplib.SMTP("smtp.gmail.com","587")
+        mail = smtplib.SMTP("smtp.gmail.com","587") ### SMTB server, change this to match yours
         mail.ehlo()
         mail.starttls()
         mail.login(userName, password)
 
         print("Attempting to send email...")
-        mail.sendmail(userName,receiver,msg.as_string()) # Change this to senders email
-        #mail.sendmail(userName,userName,confirmMessage.as_string()) # Send a confirm message to self to prevent multiple messages from sending (Deprecated)
+        mail.sendmail(userName,receiver,msg.as_string())
         mail.close()
         print("Email sent")
         return True
