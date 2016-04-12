@@ -22,6 +22,7 @@ import praw
 import smtplib
 from email.mime.text import MIMEText
 import sys
+from RedditMail.GetMail import getInfo
 
 
 import praw
@@ -30,20 +31,17 @@ from email.mime.text import MIMEText
 import sys
 
 
-VERSION = 2.1
+VERSION = 3.0
 user_agent = "RedditMail"
 connection = praw.Reddit(user_agent=user_agent)
-#smtpServer = "smtp-mail.outlook.com:587"
 
 # I can't find a way to differentiate child comments from parents
 class redditMail():
 
-
     # send the mail
     def sendMail(list, receiver): # def sendMail(content, receiver)
-        userName = ""
-        password = ""
-        with open("[LOGIN FILE]") as x:    # login file, should have 'USERNAME [EMAIL NAME]' and 'PASSWORD [PASSWORD]' on separate lines
+        logIn = getInfo()
+        with open("[LOGIN FILE]") as x:
             data = x.readlines()
             for x in data:
                 d = x.split(":")
@@ -65,12 +63,11 @@ class redditMail():
         mail.login(userName, password)
 
         print("Attempting to send email...")
-        mail.sendmail(userName,receiver,msg.as_string())
+        mail.sendmail(userName, receiver, msg.as_string())
         mail.close()
         print("Email sent")
         return True
 
-    # TODO: Get images from posts
     def getPosts(subreddits, posts, sort_by):
         content = []
         toString = ""

@@ -2,6 +2,7 @@ __author__ = "Luke Zambella"
 import RedditMail.SendMail
 import imaplib
 import re
+from RedditMail.Login import getInfo
 '''
     Copyright (C) 2015 Luke Zambella
 
@@ -20,33 +21,27 @@ import re
 '''
 
 STATUS = False
-VERSION = 2.2
+VERSION = 3.0
+
+
 def run():
     # Change these so that it gets it from a file instead
     userName = ""
     password = ""
     IMAPServer = "imap.gmail.com" # Change this to match your email's imap server
-    with open("[LOG_FILE]") as x: # The login file you use to log in, should have 'USERNAME [username]' and 'PASSWORD [password' on separate lines and nothing else
-        data = x.readlines()
-    for x in data:
-        d = x.split(":")
-        if d[0] == "USERNAME":
-            userName = (d[1])
-            userName = userName.strip()
-        elif d[0] == "PASSWORD":
-            password = str(d[1])
-            password = password.strip()
-    print("Starting now")
+
+    ''' Get the Emails login info from a file '''
+    logIn_info = getInfo()
     mail = imaplib.IMAP4_SSL(IMAPServer)
-    mail.login(userName, password) # Get user name and password from a remote file
+    mail.login(userName, password)
     try:
         mail.list()
-        mail.select("inbox") # connect to inbox.
+        mail.select("inbox")  # connect to inbox.
         result, data = mail.search(None, "ALL")
-        ids = data[0] # data is a list.
-        id_list = ids.split() # ids is a space separated string
+        ids = data[0]  # data is a list.
+        id_list = ids.split()  # ids is a space separated string
         for latest_email_id in id_list:
-            result, data = mail.fetch(latest_email_id, "(RFC822)") # fetch the email body (RFC822) for the given ID
+            result, data = mail.fetch(latest_email_id, "(RFC822)")  # fetch the email body (RFC822) for the given ID
             # Get sender's email
             resp, datan = mail.fetch(latest_email_id, '(BODY.PEEK[HEADER.FIELDS (From Subject)] RFC822.SIZE)')
             split = str(datan).split("<")
@@ -63,7 +58,7 @@ def run():
 
                     # Get the subreddits
                     if "subreddits: " in commands[1]:
-                        x = re.search(r'subreddits(.*)end_subreddits', commands[1]).group(1) # get everything between the brackets
+                        x = re.search(r'subreddits(.*)end_subreddits', commands[1]).group(1)  # get everything between the brackets
                         print("Subreddits: ", x)
                         subList = x.split()       # Convert the string to a list of subreddits separated by a space
                     else:
@@ -72,7 +67,7 @@ def run():
                     # set the sorting
                     if "sort by" in commands[1]:
                         x = re.search(r'sort(.*)end_sort', commands[1]).group(1)
-                        print("Sorting by: ",x)
+                        print("Sorting by: ", x)
                         sorting = x
                     else:
                         sorting = "top"
@@ -83,7 +78,7 @@ def run():
                         number = x
                     else:
                         number = 5
-                # So if no input was in the body the default email would contain 5 of the top askreddit threads
+                # if no input was in the body the default email would contain 5 of the top askreddit threads (personal choice)
 
                 # runs the getPosts function which returns the string to send then sends the mail
                 n = RedditMail.SendMail.redditMail.getPosts(subList, int(number), sorting)
@@ -97,6 +92,7 @@ def run():
     except:
         print("Inbox empty or another error")
 
+
 def main():
     print("RedditMail ", str(VERSION))
     print("")
@@ -104,4 +100,5 @@ def main():
     run()
     print("Done")
 
-if __name__ == "__main__" : main();
+if __name__ == "__main__":
+    main()
