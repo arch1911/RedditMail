@@ -1,7 +1,7 @@
 import smtplib
 import RedditMail
 from email.mime.text import MIMEText
-from RedditMail.GetMail import getInfo
+from RedditMail.Login import getInfo
 '''
 This Function sends a message to an email
 '''
