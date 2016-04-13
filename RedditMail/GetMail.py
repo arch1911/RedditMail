@@ -1,39 +1,20 @@
-__author__ = "Luke Zambella"
 import RedditMail.SendMail
 import imaplib
 import re
 from RedditMail.Login import getInfo
-'''
-    Copyright (C) 2015 Luke Zambella
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-'''
-
-STATUS = False
-VERSION = 3.0
+from RedditMail.GetPosts import get_posts
 
 
 def run():
-    # Change these so that it gets it from a file instead
-    userName = ""
-    password = ""
-    IMAPServer = "imap.gmail.com" # Change this to match your email's imap server
-
+    IMAPServer = RedditMail.__imapserver__
     ''' Get the Emails login info from a file '''
     logIn_info = getInfo()
     mail = imaplib.IMAP4_SSL(IMAPServer)
-    mail.login(userName, password)
+    mail.login(logIn_info[0], logIn_info[1])
+    comments = True
+    number = 0
+    subList = []
+    sorting = ''
     try:
         mail.list()
         mail.select("inbox")  # connect to inbox.
@@ -54,15 +35,20 @@ def run():
                 # get the number of posts, subreddits, and sorting
                 if "_SRM_" in str(data):
                     commands = str(data).split("_SRM_")
-                    print(commands[1]) # List the subreddits that were found
+
+                    # List the subreddits that were found
+                    print(commands[1])
 
                     # Get the subreddits
                     if "subreddits: " in commands[1]:
-                        x = re.search(r'subreddits(.*)end_subreddits', commands[1]).group(1)  # get everything between the brackets
+                        # get everything between the brackets
+                        x = re.search(r'subreddits(.*)end_subreddits', commands[1]).group(1)
                         print("Subreddits: ", x)
-                        subList = x.split()       # Convert the string to a list of subreddits separated by a space
+                        # Convert the string to a list of subreddits
+                        subList = x.split()
                     else:
-                        subList = "askreddit" # defaults to Askreddit if there are no subreddits typed in
+                        # defaults to Askreddit if there are no subreddits typed in
+                        subList = "askreddit"
 
                     # set the sorting
                     if "sort by" in commands[1]:
@@ -78,11 +64,12 @@ def run():
                         number = x
                     else:
                         number = 5
-                # if no input was in the body the default email would contain 5 of the top askreddit threads (personal choice)
-
+                    # If the user doesn't want to view comments
+                    if 'nocomments' in commands[1]:
+                        comments = False
                 # runs the getPosts function which returns the string to send then sends the mail
-                n = RedditMail.SendMail.redditMail.getPosts(subList, int(number), sorting)
-                RedditMail.SendMail.redditMail.sendMail(n, toSend[0])
+                n = get_posts(subList, int(number), sorting, comments)
+                RedditMail.SendMail.send_mail(n, toSend[0])
 
             else:
                 print("Email not a RedditMail command")
@@ -94,11 +81,7 @@ def run():
 
 
 def main():
-    print("RedditMail ", str(VERSION))
+    print("RedditMail ", str(RedditMail.__version__))
     print("")
-    STATUS = True
     run()
     print("Done")
-
-if __name__ == "__main__":
-    main()
