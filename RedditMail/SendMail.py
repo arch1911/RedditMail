@@ -12,13 +12,13 @@ def send_mail(message, receiver): # def sendMail(content, receiver)
 
     msg = MIMEText(message, 'html')
     msg['Subject'] = "Reddit"
-    msg['From'] = "[MAIL NAME]"
+    msg['From'] = "RedditMail"
     msg['To'] = receiver
 
     mail = smtplib.SMTP(RedditMail.__smtpserver__, RedditMail.__smtp_port__)
     mail.ehlo()
     mail.starttls()
-    mail.login(logIn[1], logIn[2])
+    mail.login(logIn[0], logIn[1])
 
     print("Attempting to send email...")
     mail.sendmail(logIn[1], receiver, msg.as_string())

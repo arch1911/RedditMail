@@ -8,7 +8,7 @@ user_agent = "RedditMail"
 connection = praw.Reddit(user_agent=user_agent)
 
 
-def get_posts(subreddits, posts, sort_by, comments):
+def get_posts(subreddits, posts, sort_by, comments, self_text):
     """
     Get content from reddit formatted with bad html and return it as a giant string
     Args:
@@ -16,6 +16,7 @@ def get_posts(subreddits, posts, sort_by, comments):
         posts (int): amount of posts to get
         sort_by (string): sort the content before pulling it
         comments (boolean): if the user wants comments or not
+        self_text (boolean): If the user wants self text to be included
     """
     content = []
     return_string = ""
@@ -37,9 +38,10 @@ def get_posts(subreddits, posts, sort_by, comments):
         # go through the submissions in that subreddit (Currently limted)
         for submission in submissions:
             content.append("<b><h2>"+str(submission)+"</h2></b>\n")
-            content.append("<p>"+str(submission.selftext)+"</p>\n")
+            if self_text is True:
+                content.append("<p>"+str(submission.selftext)+"</p>\n")
             submission.replace_more_comments(limit=2, threshold=10)
-            if comments:
+            if comments is True:
                 content_comments = praw.helpers.flatten_tree(submission.comments)
                 # go through the comments in the current submission
                 for comment in content_comments:
