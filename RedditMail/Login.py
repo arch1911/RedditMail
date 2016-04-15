@@ -1,17 +1,18 @@
 import RedditMail
-"""
-Function to return a list that contains the emails login info.
-The file should contain the following:
-USERNAME:[USERNAME]
-PASSWORD:[PASSWORD]
-
-Replace the brackets with the correct info
-Note: The function currently does not account for encrypted strings or ciphers like base64 so it's insecure.
-"""
 
 
-def getInfo():
-    log_file = RedditMail.__log_file__  # Replace this with the file to open
+def get_info():
+    """
+    Gets E-mail username and password from the file defined at __log_file__ in __init__.py
+    The file should contain the following:
+    USERNAME:[USERNAME]
+    PASSWORD:[PASSWORD]
+    Do not include brackets or use spaces
+
+    Note: The file must be stored as plaintext with no encryption making it insecure.
+    :return:
+    """
+    log_file = RedditMail.__log_file__
     user_name = ''
     password = ''
 

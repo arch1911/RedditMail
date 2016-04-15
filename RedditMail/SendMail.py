@@ -1,14 +1,17 @@
 import smtplib
 import RedditMail
 from email.mime.text import MIMEText
-from RedditMail.Login import getInfo
-'''
-This Function sends a message to an email
-'''
+from RedditMail.Login import get_info
 
 
-def send_mail(message, receiver): # def sendMail(content, receiver)
-    logIn = getInfo()
+def send_mail(message, receiver):
+    """
+    Function to send an email
+    :param message: (String) Message to send
+    :param receiver: (String) E-mail of the receiver
+    :return:
+    """
+    logIn = get_info()
 
     msg = MIMEText(message, 'html')
     msg['Subject'] = "Reddit"
@@ -23,4 +26,3 @@ def send_mail(message, receiver): # def sendMail(content, receiver)
     print("Attempting to send email...")
     mail.sendmail(logIn[1], receiver, msg.as_string())
     mail.close()
-    print("Email sent")

@@ -1,14 +1,13 @@
 import RedditMail.SendMail
 import imaplib
 import re
-from RedditMail.Login import getInfo
+from RedditMail.Login import get_info
 from RedditMail.GetPosts import get_posts
 
 
 def run():
     IMAPServer = RedditMail.__imapserver__
-    ''' Get the Emails login info from a file '''
-    logIn_info = getInfo()
+    logIn_info = get_info()
     mail = imaplib.IMAP4_SSL(IMAPServer)
     mail.login(logIn_info[0], logIn_info[1])
     comments = True
